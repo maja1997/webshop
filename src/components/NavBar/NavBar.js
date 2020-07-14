@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import {
   AppBar,
   Toolbar,
@@ -11,6 +12,8 @@ import { useTheme } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { auth } from 'firebase/firebase.util';
+import { connect } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function NavBar() {
+function NavBar({ currentUser }) {
   const theme = useTheme();
   const classes = useStyles();
   const matches = useMediaQuery(theme.breakpoints.down('sm'));
@@ -45,10 +48,25 @@ function NavBar() {
         </Typography>
         {!matches ? (
           <>
-            <Button size="large" color="inherit">Shop</Button>
+            <Button component={Link} to="/" size="large" color="inherit">Shop</Button>
             <Button size="large" color="inherit">Contact</Button>
-            <Button size="large" color="inherit">Sign In</Button>
-            <Button size="large" color="inherit">Sign Up</Button>
+            {
+              currentUser ? (
+                <Button size="large" color="inherit" onClick={() => auth.signOut()}>
+                  SIGN OUT
+                </Button>
+              ) : (
+                <Button component={Link} to="/sign-in" size="large" color="inherit">Sign In</Button>
+              )
+            }
+            {
+              currentUser ? (
+                null
+              ) : (
+                <Button component={Link} to="/sign-up" size="large" color="inherit">Sign Up</Button>
+              )
+            }
+
           </>
         ) : null}
         <IconButton color="primary" aria-label="add to shopping cart">
@@ -58,5 +76,9 @@ function NavBar() {
     </AppBar>
   );
 }
+// state je objekat root reducer i odatle uzimamo property user pa iz toga currentUser
+const mapStateToProps = (state) => ({
+  currentUser: state.user.currentUser,
+});
 
-export default NavBar;
+export default connect(mapStateToProps)(NavBar);

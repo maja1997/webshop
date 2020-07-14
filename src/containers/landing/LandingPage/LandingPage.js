@@ -2,6 +2,7 @@ import React from 'react';
 import {
   Grid, Paper, makeStyles, Container,
 } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 import Collection from '../Collection';
 
 const useStyles = makeStyles((theme) => ({
@@ -23,12 +24,14 @@ function LandingPage() {
     <Container maxWidth="xl" className={classes.root}>
       <Grid container spacing={3}>
         <Grid item sm={12} md={6}>
-          <Paper className={classes.paper}>
-            <Collection
-              src="https://blog.lids.com/wp-content/uploads/2017/09/@interstate19-e1536691591529.jpg"
-              title="hats"
-            />
-          </Paper>
+          <Link style={{ textDecoration: 'none' }} to="/categories/hats">
+            <Paper className={classes.paper}>
+              <Collection
+                src="https://blog.lids.com/wp-content/uploads/2017/09/@interstate19-e1536691591529.jpg"
+                title="hats"
+              />
+            </Paper>
+          </Link>
         </Grid>
         <Grid item sm={12} md={6}>
           <Paper className={classes.paper}>

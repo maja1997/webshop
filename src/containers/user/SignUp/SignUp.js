@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
+import { auth, createUserDocument } from 'firebase/firebase.util';
 import {
   makeStyles, Typography, Paper, Button,
 } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
-import { signInWithGoogle, auth } from 'firebase/firebase.util';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -33,18 +33,27 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function SignIn() {
+function SignUp() {
+  const [displayName, setdisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setconfirmPassword] = useState('');
   const classes = useStyles();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    if (password !== confirmPassword) {
+      return;
+    }
+
     try {
-      await auth.signInWith;
+      const { user } = await auth.createUserWithEmailAndPassword(email, password);
+      await createUserDocument(user, { displayName });
+      setdisplayName('');
       setEmail('');
       setPassword('');
+      setconfirmPassword('');
     } catch (err) {
       // todo
     }
@@ -60,11 +69,22 @@ function SignIn() {
         className={classes.form}
       >
         <Typography variant="h4" className={classes.title}>
-          I already have an account
+          I do not have an account
         </Typography>
         <Typography variant="h6" className={classes.title}>
-          Sign in with your email and password
+          Sign up with your email and password
         </Typography>
+        <TextField
+          required
+          id="displayName"
+          type="text"
+          label="displayName"
+          onChange={(event) => {
+            setdisplayName(event.target.value);
+          }}
+          value={displayName}
+          className={classes.input}
+        />
         <TextField
           required
           id="email"
@@ -87,22 +107,26 @@ function SignIn() {
           value={password}
           className={classes.input}
         />
+        <TextField
+          required
+          id="confirmPassword"
+          type="password"
+          label="confirmPassword"
+          onChange={(event) => {
+            setconfirmPassword(event.target.value);
+          }}
+          value={confirmPassword}
+          className={classes.input}
+        />
         <div className={classes.buttonGroup}>
           <Button onClick={handleSubmit} className={classes.btn} variant="contained">
-            Submit
+            SIGN UP
           </Button>
-          <Button
-            color="secondary"
-            className={classes.btn}
-            variant="contained"
-            onClick={signInWithGoogle}
-          >
-            Sign in with google
-          </Button>
+
         </div>
       </Paper>
     </div>
   );
 }
 
-export default SignIn;
+export default SignUp;

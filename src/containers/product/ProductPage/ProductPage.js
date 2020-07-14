@@ -1,0 +1,101 @@
+import React from 'react';
+import {
+  Grid, Container, makeStyles, Typography, Button,
+} from '@material-ui/core';
+
+const productList = [{
+  id: 1,
+  title: 'nike duks',
+  price: 1334.23,
+  image: 'http://s7d2.scene7.com/is/image/aeo/0573_1894_410_f?$cat-main_large$',
+},
+{
+  id: 2,
+  title: 'nike duks',
+  price: 1334.23,
+  image: 'http://s7d2.scene7.com/is/image/aeo/0573_1894_410_f?$cat-main_large$',
+}, {
+  id: 3,
+  title: 'nike duks',
+  price: 1334.23,
+  image: 'http://s7d2.scene7.com/is/image/aeo/0573_1894_410_f?$cat-main_large$',
+}, {
+  id: 4,
+  title: 'nike duks',
+  price: 1334.23,
+  image: 'http://s7d2.scene7.com/is/image/aeo/0573_1894_410_f?$cat-main_large$',
+}, {
+  id: 5,
+  title: 'nike duks',
+  price: 1334.23,
+  image: 'http://s7d2.scene7.com/is/image/aeo/0573_1894_410_f?$cat-main_large$',
+}, {
+  id: 6,
+  title: 'nike duks',
+  price: 1334.23,
+  image: 'http://s7d2.scene7.com/is/image/aeo/0573_1894_410_f?$cat-main_large$',
+},
+];
+
+const useStyles = makeStyles({
+  root: {
+    marginTop: 30,
+  },
+  image: {
+    display: 'block',
+    margin: '0 auto',
+  },
+  details: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+  },
+  description: {
+    marginTop: 20,
+    flex: 1,
+  },
+  price: {
+    margin: '20px 0',
+  },
+});
+
+function ProductPage() {
+  const classes = useStyles();
+
+  return (
+    <Container className={classes.root} maxWidth="lg">
+      <Grid container>
+        <Grid item md={6}>
+          <img
+            className={classes.image}
+            src={productList[0].image}
+            alt={productList[0].title}
+          />
+        </Grid>
+        <Grid className={classes.details} item md={6}>
+          <Typography variant="h2">
+            {productList[0].title}
+          </Typography>
+          <Typography className={classes.description} variant="body1">
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+            Lorem Ipsum has been the
+            industry&apos;s standard dummy text ever since the 1500s, when an unknown
+            printer took a galley of
+            type and scrambled it to make a type specimen book. It has survived not only
+            five centuries, but also
+            the leap into electronic typesetting, remaining essentially unchanged. It was
+            popularised in the 1960s
+            with the release of Letraset sheets containing
+          </Typography>
+          <Typography className={classes.price} variant="h6">
+            $
+            {productList[0].price}
+          </Typography>
+          <Button variant="contained">Add to cart</Button>
+        </Grid>
+      </Grid>
+    </Container>
+  );
+}
+
+export default ProductPage;
