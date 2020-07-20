@@ -20,15 +20,13 @@ const useStyles = makeStyles({
   },
 });
 
-const sizes = ['armani', 'gucci', 'dolcegabana', 'h&m'];
+const sizes = ['ae', 'aerie'];
 
 function FilterBrand() {
   const classes = useStyles();
   const [checkState, setCheckState] = useState({
-    armani: true,
-    guci: true,
-    dolcegabana: true,
-    'h&m': true,
+    ae: true,
+    aerie: true,
   });
 
   const handleChange = (event) => {

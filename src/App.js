@@ -10,9 +10,10 @@ import { auth, createUserDocument } from 'firebase/firebase.util';
 import SignUp from 'containers/user/SignUp';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as userActions from 'redux/user/user.actions';
+import * as userActions from 'redux/user/UserActions';
 import CategoryPage from 'containers/category/CategoryPage';
 import ProductPage from 'containers/product/ProductPage/ProductPage';
+import CheckoutPage from 'containers/checkout/CheckoutPage';
 
 function App({ currentUser, setCurrentUser }) {
   useEffect(() => {
@@ -52,6 +53,9 @@ function App({ currentUser, setCurrentUser }) {
           </Route>
           <Route path="/categories/:categoryId/:productId">
             <ProductPage />
+          </Route>
+          <Route exact path="/checkout">
+            <CheckoutPage />
           </Route>
         </Switch>
         {/* footer */}

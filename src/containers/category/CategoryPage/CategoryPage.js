@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import {
   Container,
   Grid,
@@ -11,52 +12,19 @@ import FilterSize from '../FilterSize';
 import FilterBrand from '../FilterBrand';
 import FilterPrice from '../FilterPrice';
 
-const productList = [{
-  id: 1,
-  title: 'nike duks',
-  price: 1334.23,
-  image: 'http://s7d2.scene7.com/is/image/aeo/0573_1894_410_f?$cat-main_large$',
-},
-{
-  id: 2,
-  title: 'nike duks',
-  price: 1334.23,
-  image: 'http://s7d2.scene7.com/is/image/aeo/0573_1894_410_f?$cat-main_large$',
-}, {
-  id: 3,
-  title: 'nike duks',
-  price: 1334.23,
-  image: 'http://s7d2.scene7.com/is/image/aeo/0573_1894_410_f?$cat-main_large$',
-}, {
-  id: 4,
-  title: 'nike duks',
-  price: 1334.23,
-  image: 'http://s7d2.scene7.com/is/image/aeo/0573_1894_410_f?$cat-main_large$',
-}, {
-  id: 5,
-  title: 'nike duks',
-  price: 1334.23,
-  image: 'http://s7d2.scene7.com/is/image/aeo/0573_1894_410_f?$cat-main_large$',
-}, {
-  id: 6,
-  title: 'nike duks',
-  price: 1334.23,
-  image: 'http://s7d2.scene7.com/is/image/aeo/0573_1894_410_f?$cat-main_large$',
-},
-];
-
 const useStyles = makeStyles({
   root: {
-    marginTop: 100,
+    marginTop: 50,
   },
   title: {
     textTransform: 'uppercase',
   },
 });
 
-function CategoryPage() {
+function CategoryPage({ collection }) {
   const classes = useStyles();
   const { categoryId } = useParams();
+
   return (
     <Container className={classes.root} maxWidth="xl">
       <Grid container>
@@ -69,11 +37,14 @@ function CategoryPage() {
           <Typography className={classes.title} align="center" variant="h3">
             {categoryId}
           </Typography>
-          <ProductList products={productList} />
+          <ProductList products={collection[categoryId].items} />
         </Grid>
       </Grid>
     </Container>
   );
 }
+const mapStateToProps = ({ shop }) => ({
+  collection: shop.collections,
+});
 
-export default CategoryPage;
+export default connect(mapStateToProps)(CategoryPage);

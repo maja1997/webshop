@@ -1,5 +1,5 @@
 // fja koja vraca objekat
-import { UserActionTypes } from 'redux/user/user.types';
+import { UserActionTypes } from 'redux/user/UserTypes';
 
 // eslint-disable-next-line import/prefer-default-export
 export const setCurrentUser = (user) => ({

@@ -2,48 +2,17 @@ import React from 'react';
 import {
   Grid, Container, makeStyles, Typography, Button,
 } from '@material-ui/core';
-
-const productList = [{
-  id: 1,
-  title: 'nike duks',
-  price: 1334.23,
-  image: 'http://s7d2.scene7.com/is/image/aeo/0573_1894_410_f?$cat-main_large$',
-},
-{
-  id: 2,
-  title: 'nike duks',
-  price: 1334.23,
-  image: 'http://s7d2.scene7.com/is/image/aeo/0573_1894_410_f?$cat-main_large$',
-}, {
-  id: 3,
-  title: 'nike duks',
-  price: 1334.23,
-  image: 'http://s7d2.scene7.com/is/image/aeo/0573_1894_410_f?$cat-main_large$',
-}, {
-  id: 4,
-  title: 'nike duks',
-  price: 1334.23,
-  image: 'http://s7d2.scene7.com/is/image/aeo/0573_1894_410_f?$cat-main_large$',
-}, {
-  id: 5,
-  title: 'nike duks',
-  price: 1334.23,
-  image: 'http://s7d2.scene7.com/is/image/aeo/0573_1894_410_f?$cat-main_large$',
-}, {
-  id: 6,
-  title: 'nike duks',
-  price: 1334.23,
-  image: 'http://s7d2.scene7.com/is/image/aeo/0573_1894_410_f?$cat-main_large$',
-},
-];
+import { connect } from 'react-redux';
+import { addItem } from 'redux/cart/CartActions';
+import { useParams } from 'react-router-dom';
 
 const useStyles = makeStyles({
   root: {
     marginTop: 30,
   },
   image: {
-    display: 'block',
-    margin: '0 auto',
+    maxWidth: '82%',
+    height: 'auto',
   },
   details: {
     display: 'flex',
@@ -59,8 +28,15 @@ const useStyles = makeStyles({
   },
 });
 
-function ProductPage() {
+function ProductPage({ collection, addItem }) {
   const classes = useStyles();
+  const { categoryId, productId } = useParams();
+
+  const itemForRender = collection[categoryId].items.find((item) => item.id == productId);
+
+  // Object.values(collection[categoryId].items).forEach((val) => {
+  // console.log(val.id == productId);
+  // });
 
   return (
     <Container className={classes.root} maxWidth="lg">
@@ -68,13 +44,13 @@ function ProductPage() {
         <Grid item md={6}>
           <img
             className={classes.image}
-            src={productList[0].image}
-            alt={productList[0].title}
+            src={itemForRender.imageUrl}
+            alt={itemForRender.name}
           />
         </Grid>
         <Grid className={classes.details} item md={6}>
-          <Typography variant="h2">
-            {productList[0].title}
+          <Typography variant="h3">
+            {itemForRender.name}
           </Typography>
           <Typography className={classes.description} variant="body1">
             Lorem Ipsum is simply dummy text of the printing and typesetting industry.
@@ -87,15 +63,23 @@ function ProductPage() {
             popularised in the 1960s
             with the release of Letraset sheets containing
           </Typography>
-          <Typography className={classes.price} variant="h6">
+          <Typography className={classes.price} variant="h4">
             $
-            {productList[0].price}
+            {itemForRender.price}
           </Typography>
-          <Button variant="contained">Add to cart</Button>
+          <Button variant="contained" size="large" color="secondary" onClick={() => addItem(itemForRender)}>Add to cart</Button>
         </Grid>
       </Grid>
     </Container>
   );
 }
 
-export default ProductPage;
+const mapDispatchToProps = (dispatch) => ({
+  addItem: (item) => dispatch(addItem(item)),
+});
+
+const mapStateToProps = (state) => ({
+  collection: state.shop.collections,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProductPage);

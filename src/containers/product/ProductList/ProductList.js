@@ -21,7 +21,7 @@ function ProductList({ products }) {
     <Grid className={classes.root} container spacing={3}>
       {products.map((product) => (
         <Grid key={product.id} xs={3} item>
-          <NavLink className={classes.link} to={`categories/${categoryId}/${product.id}`}>
+          <NavLink className={classes.link} to={`${categoryId}/${product.id}`}>
             <ProductCard product={product} />
           </NavLink>
         </Grid>

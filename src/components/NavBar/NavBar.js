@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import {
   AppBar,
   Toolbar,
@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   toolbar: {
-    minHeight: 100,
+    minHeight: 85,
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function NavBar({ currentUser }) {
+function NavBar({ currentUser, history }) {
   const theme = useTheme();
   const classes = useStyles();
   const matches = useMediaQuery(theme.breakpoints.down('sm'));
@@ -44,7 +44,7 @@ function NavBar({ currentUser }) {
           </IconButton>
         ) : null}
         <Typography variant="h4" className={classes.title}>
-          THE SHOP
+          Clothop
         </Typography>
         {!matches ? (
           <>
@@ -69,16 +69,16 @@ function NavBar({ currentUser }) {
 
           </>
         ) : null}
-        <IconButton color="primary" aria-label="add to shopping cart">
+        <IconButton onClick={() => history.push('/checkout')} color="primary" aria-label="add to shopping cart">
           <AddShoppingCartIcon />
         </IconButton>
       </Toolbar>
     </AppBar>
   );
 }
-// state je objekat root reducer i odatle uzimamo property user pa iz toga currentUser
+
 const mapStateToProps = (state) => ({
   currentUser: state.user.currentUser,
 });
 
-export default connect(mapStateToProps)(NavBar);
+export default withRouter(connect(mapStateToProps)(NavBar));
