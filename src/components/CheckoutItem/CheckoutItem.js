@@ -3,6 +3,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { clearItemFromCart, addItem, removeItem } from 'redux/cart/CartActions';
+import formatter from 'services/Currency';
 
 const useStyles = makeStyles({
   checkoutItem: {
@@ -32,9 +33,13 @@ const useStyles = makeStyles({
   removeButton: {
     paddingLeft: '12px',
     cursor: 'pointer',
+    background: 'none',
+    border: 'none',
   },
   arrow: {
     cursor: 'pointer',
+    background: 'none',
+    border: 'none',
   },
   value: {
     margin: '0 10px',
@@ -53,27 +58,36 @@ const CheckoutItem = ({
       <div className={classes.imageContainer}>
         <img className={classes.img} src={imageUrl} alt="item" />
       </div>
-      <span className={classes.nameQuantityPrice}>{name}</span>
+      <span className={classes.namePrice}>{name}</span>
       <span className={classes.quantity}>
-        <div className={classes.arrow} onClick={() => removeItem(cartItem)}>
+        <button
+          type="button"
+          className={classes.arrow}
+          onClick={() => removeItem(cartItem)}
+        >
           &#10094;
-        </div>
+        </button>
         <span className={classes.value}>
           {quantity}
         </span>
-        <div className={classes.arrow} onClick={() => addItem(cartItem)}>
+        <button
+          type="button"
+          className={classes.arrow}
+          onClick={() => addItem(cartItem)}
+        >
           &#10095;
-        </div>
+        </button>
       </span>
-      <span className={classes.nameQuantityPrice}>
-        {price}
+      <span className={classes.namePrice}>
+        {formatter.format(price)}
       </span>
-      <div
+      <button
+        type="button"
         className={classes.removeButton}
         onClick={() => clearItem(cartItem)}
       >
         &#10005;
-      </div>
+      </button>
     </div>
   );
 };
