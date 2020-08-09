@@ -2,6 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import CheckoutItem from 'components/CheckoutItem';
+import StripeCheckoutButton from 'components/StripeButton';
 
 const useStyles = makeStyles(() => ({
 
@@ -28,6 +29,17 @@ const useStyles = makeStyles(() => ({
     marginTop: '30px',
     marginLeft: 'auto',
     fontSize: '36px',
+  },
+  testWarning: {
+    textAlign: 'center',
+    marginTop: '40px',
+    marginBottom: '20px',
+    fontSize: '20px',
+    color: 'red',
+  },
+  stripeButton: {
+    marginLeft: 'auto',
+    marginTop: '50px',
   },
 }));
 
@@ -64,6 +76,12 @@ function CheckoutPage({ cartItems, cartTotal }) {
           TOTAL: $
           {cartTotal}
         </span>
+        <div className={classes.testWarning}>
+          *Please use the following credit card for payments*
+          <br />
+          4242 4242 4242 4242 - Exp: 10/20 - CVV: 123
+        </div>
+        <StripeCheckoutButton className={classes.stripeButton} price={cartTotal} />
       </div>
     </div>
   );

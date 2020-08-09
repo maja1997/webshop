@@ -47,6 +47,7 @@ const useStyles = makeStyles({
 });
 
 const CheckoutItem = ({
+  // eslint-disable-next-line no-shadow
   cartItem, clearItem, addItem, removeItem,
 }) => {
   const classes = useStyles();

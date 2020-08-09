@@ -44,7 +44,7 @@ function NavBar({ currentUser, history }) {
           </IconButton>
         ) : null}
         <Typography variant="h4" className={classes.title}>
-          Clothop
+          Bella Ciao
         </Typography>
         {!matches ? (
           <>

@@ -22,7 +22,13 @@ function LandingPage({ categories }) {
           categories.map(({
             id, title, image, linkUrl,
           }, i) => (
-            <LandingItem key={id} title={title} image={image} linkUrl={linkUrl} width={i < 2 ? 6 : 4} />
+            <LandingItem
+              key={id}
+              title={title}
+              image={image}
+              linkUrl={linkUrl}
+              width={i < 2 ? 6 : 4}
+            />
           ))
         }
 

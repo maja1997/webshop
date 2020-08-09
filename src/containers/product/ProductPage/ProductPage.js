@@ -28,10 +28,12 @@ const useStyles = makeStyles({
   },
 });
 
+// eslint-disable-next-line no-shadow
 function ProductPage({ collection, addItem }) {
   const classes = useStyles();
   const { categoryId, productId } = useParams();
 
+  // eslint-disable-next-line eqeqeq
   const itemForRender = collection[categoryId].items.find((item) => item.id == productId);
 
   // Object.values(collection[categoryId].items).forEach((val) => {
