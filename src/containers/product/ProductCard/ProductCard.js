@@ -18,12 +18,17 @@ const useStyles = makeStyles({
   },
 });
 
-function ProductCard({ product: { imageUrl, name, price } }) {
+function ProductCard({
+  product: {
+    imageUrl, name, price,
+  },
+  className,
+}) {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
-      <img className={classes.image} src={imageUrl} alt={name} />
+      <img className={`${classes.image} ${className}`} src={imageUrl} alt={name} />
       <Typography className={classes.title} variant="h6">{name}</Typography>
       <Typography variant="subtitle1">{formatter.format(price)}</Typography>
     </div>

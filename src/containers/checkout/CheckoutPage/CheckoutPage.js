@@ -26,20 +26,21 @@ const useStyles = makeStyles(() => ({
     width: '23%',
   },
   total: {
-    marginTop: '30px',
+    marginTop: 30,
     marginLeft: 'auto',
-    fontSize: '36px',
+    fontSize: 36,
   },
   testWarning: {
     textAlign: 'center',
-    marginTop: '40px',
-    marginBottom: '20px',
-    fontSize: '20px',
+    marginTop: 40,
+    marginBottom: 20,
+    fontSize: 20,
     color: 'red',
   },
   stripeButton: {
     marginLeft: 'auto',
-    marginTop: '50px',
+    marginTop: 50,
+    marginBottom: 50,
   },
 }));
 
@@ -81,7 +82,12 @@ function CheckoutPage({ cartItems, cartTotal }) {
           <br />
           4242 4242 4242 4242 - Exp: 10/20 - CVV: 123
         </div>
-        <StripeCheckoutButton className={classes.stripeButton} price={cartTotal} />
+        <div className={classes.stripeButton}>
+          {' '}
+          <StripeCheckoutButton price={cartTotal} />
+          {' '}
+        </div>
+
       </div>
     </div>
   );

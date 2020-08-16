@@ -6,7 +6,9 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import LandingPage from 'containers/landing/LandingPage';
 import NavBar from 'components/NavBar';
 import SignIn from 'containers/user/SignIn';
-import { auth, createUserDocument } from 'firebase/firebase.util';
+import {
+  auth, createUserDocument, firestore, convertCollectionsSnapshotToMap,
+} from 'firebase/firebase.util';
 import SignUp from 'containers/user/SignUp';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -14,9 +16,21 @@ import * as userActions from 'redux/user/UserActions';
 import CategoryPage from 'containers/category/CategoryPage';
 import ProductPage from 'containers/product/ProductPage/ProductPage';
 import CheckoutPage from 'containers/checkout/CheckoutPage';
+import 'react-toastify/dist/ReactToastify.css';
+import Footer from 'components/Footer';
+import { createStructuredSelector } from 'reselect';
+import { selectCurrentUser } from 'redux/user/UserSelectors';
+import * as shopActions from 'redux/shop/ShopActions';
 
-function App({ currentUser, setCurrentUser }) {
+function App({ currentUser, setCurrentUser, updateCollections }) {
   useEffect(() => {
+    // eslint-disable-next-line no-unused-vars
+    let unsubscribeFromSnapshot = null;
+    const collectionRef = firestore.collection('collections');
+    unsubscribeFromSnapshot = collectionRef.onSnapshot((snapshot) => {
+      const collectionsMap = convertCollectionsSnapshotToMap(snapshot);
+      updateCollections(collectionsMap);
+    });
     const unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
       if (userAuth) {
         const userRef = await createUserDocument(userAuth);
@@ -58,18 +72,18 @@ function App({ currentUser, setCurrentUser }) {
             <CheckoutPage />
           </Route>
         </Switch>
-        {/* footer */}
+        <Footer />
       </Router>
     </>
   );
 }
 
-const mapStateToProps = (state) => ({
-  currentUser: state.user.currentUser,
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser,
 });
 
-const mapDispatchToProps = (dispatch) => bindActionCreators(userActions, dispatch);
+const mapDispatchToProps = (dispatch) => (
+  bindActionCreators({ ...userActions, ...shopActions }, dispatch)
+);
 
-//  App komponenta samo setuje usera,
-//  nigde ga ne koristi i zato nam ne treba prvi parametar kod connect
 export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -24,7 +24,6 @@ export const signInWithGoogle = () => auth.signInWithPopup(provider);
 
 export const createUserDocument = async (userAuth, additionalData) => {
   if (!userAuth) return;
-  // sad proveravamo da li mzd postoji user
   const userRef = firestore.doc(`users/${userAuth.uid}`);
   const snapShot = await userRef.get();
 
@@ -47,4 +46,33 @@ export const createUserDocument = async (userAuth, additionalData) => {
   return userRef;
 };
 
-export default firebase;
+export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
+  const collectionRef = firestore.collection(collectionKey);
+
+  const batch = firestore.batch();
+  objectsToAdd.forEach((obj) => {
+    const newDocRef = collectionRef.doc();
+    batch.set(newDocRef, obj);
+  });
+
+  // eslint-disable-next-line no-return-await
+  return await batch.commit();
+};
+
+export const convertCollectionsSnapshotToMap = (collections) => {
+  const tranformedCollection = collections.docs.map((doc) => {
+    const { title, items } = doc.data();
+
+    return {
+      routeName: encodeURI(title.toLowerCase()),
+      id: doc.id,
+      title,
+      items,
+    };
+  });
+
+  return tranformedCollection.reduce((accumulator, collection) => {
+    accumulator[collection.title.toLowerCase()] = collection;
+    return accumulator;
+  }, {});
+};
