@@ -8,7 +8,7 @@ import { ReactComponent as FacebookIcon } from 'assets/icons/facebook-icon.svg';
 import { ReactComponent as PinterestIcon } from 'assets/icons/pinterest-icon.svg';
 import { useTheme } from '@material-ui/core/styles';
 import clsx from 'clsx';
-import MapContainer from '../MapContainer/MapContainer';
+import MapContainer from '../../containers/MapContainer/MapContainer';
 
 const useStyles = makeStyles((theme) => ({
   footer: {

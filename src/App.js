@@ -54,26 +54,26 @@ function App({ currentUser, setCurrentUser, updateCollections }) {
   return (
     <>
       <CssBaseline />
-      <Router>
-        <NavBar />
-        <Switch>
-          <Route exact path="/">
-            <LandingPage />
-          </Route>
-          <Route path="/sign-in" render={() => (currentUser ? (<Redirect to="/" />) : (<SignIn />))} />
-          <Route path="/sign-up" render={() => (currentUser ? (<Redirect to="/" />) : (<SignUp />))} />
-          <Route exact path="/categories/:categoryId">
-            <CategoryPage />
-          </Route>
-          <Route path="/categories/:categoryId/:productId">
-            <ProductPage />
-          </Route>
-          <Route exact path="/checkout">
-            <CheckoutPage />
-          </Route>
-        </Switch>
-        <Footer />
-      </Router>
+
+      <NavBar />
+      <Switch>
+        <Route exact path="/">
+          <LandingPage />
+        </Route>
+        <Route path="/sign-in" render={() => (currentUser ? (<Redirect to="/" />) : (<SignIn />))} />
+        <Route path="/sign-up" render={() => (currentUser ? (<Redirect to="/" />) : (<SignUp />))} />
+        <Route exact path="/categories/:categoryId">
+          <CategoryPage />
+        </Route>
+        <Route path="/categories/:categoryId/:productId">
+          <ProductPage />
+        </Route>
+        <Route exact path="/checkout">
+          <CheckoutPage />
+        </Route>
+      </Switch>
+      <Footer />
+
     </>
   );
 }

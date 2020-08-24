@@ -52,9 +52,6 @@ function ProductPage({ collection, addItem }) {
 
   // eslint-disable-next-line eqeqeq
 
-  // Object.values(collection[categoryId].items).forEach((val) => {
-  // console.log(val.id == productId);
-  // });
   const notify = () => {
     toast.success('Successful added to cart!', { position: toast.POSITION.BOTTOM_RIGHT, autoClose: 6000 });
   };
