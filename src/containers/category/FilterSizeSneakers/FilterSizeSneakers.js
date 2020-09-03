@@ -1,4 +1,8 @@
-import React, { useState } from 'react';
+import React, { useCallback } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { useParams } from 'react-router-dom';
+import { debounce } from 'lodash';
 import {
   Typography,
   ExpansionPanel,
@@ -8,6 +12,7 @@ import {
   FormControlLabel,
   Checkbox,
 } from '@material-ui/core';
+import * as shopActions from 'redux/shop/ShopActions';
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -20,21 +25,32 @@ const useStyles = makeStyles({
   },
 });
 
-const sizes = ['36', '37', '38', '39', '40', '41'];
+const allSizes = [36, 37, 38, 39, 40, 41];
 
-function FilterSizeSneakers() {
+function FilterSizeSneakers({
+  filters: { shoeSizes },
+  applyFillter,
+  fetchProducts,
+}) {
   const classes = useStyles();
-  const [checkState, setCheckState] = useState({
-    36: false,
-    37: false,
-    38: false,
-    39: false,
-    40: false,
-    41: false,
-  });
+  const { categoryId } = useParams();
+
+  const debounceFetch = useCallback(
+    debounce(() => fetchProducts(categoryId), 250, { leading: false }),
+    [fetchProducts],
+  );
 
   const handleChange = (event) => {
-    setCheckState({ ...checkState, [event.target.name]: event.target.checked });
+    const targetSize = Number(event.target.name);
+    let newSizes;
+    if (shoeSizes.includes(targetSize)) {
+      newSizes = shoeSizes.filter((size) => size !== targetSize);
+      applyFillter({ shoeSizes: newSizes });
+    } else {
+      newSizes = [...shoeSizes, targetSize];
+      applyFillter({ shoeSizes: newSizes });
+    }
+    debounceFetch();
   };
 
   return (
@@ -48,18 +64,18 @@ function FilterSizeSneakers() {
       </ExpansionPanelSummary>
       <ExpansionPanelDetails className={classes.root}>
         <FormGroup row>
-          {sizes.map((size) => (
+          {allSizes.map((size) => (
             <FormControlLabel
               className={classes.checkBox}
               control={(
                 <Checkbox
-                  checked={checkState.checkedB}
+                  checked={shoeSizes.includes(size)}
                   onChange={handleChange}
                   name={size}
                   color="primary"
                 />
                 )}
-              label={size.toUpperCase()}
+              label={size}
             />
           ))}
         </FormGroup>
@@ -68,4 +84,10 @@ function FilterSizeSneakers() {
   );
 }
 
-export default FilterSizeSneakers;
+const mapStateToProps = ({ shop: { filters } }) => ({
+  filters,
+});
+
+const mapDispatchToProps = (dispatch) => bindActionCreators(shopActions, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(FilterSizeSneakers);

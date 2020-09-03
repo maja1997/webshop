@@ -2,7 +2,7 @@ import React from 'react';
 import { Typography, makeStyles } from '@material-ui/core';
 import formatter from 'services/Currency';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     alignItems: 'center',
@@ -16,7 +16,7 @@ const useStyles = makeStyles({
   title: {
     textDecoration: 'none',
   },
-});
+}));
 
 function ProductCard({
   product: {

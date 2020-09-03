@@ -3,7 +3,7 @@ import { Grid, makeStyles, Typography } from '@material-ui/core';
 import { NavLink, useParams } from 'react-router-dom';
 import ProductCard from '../ProductCard';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(() => ({
   root: {
     marginLeft: 30,
     marginTop: 20,
@@ -24,21 +24,20 @@ const useStyles = makeStyles({
   title: {
     marginTop: 80,
   },
-});
+}));
 
 function RelatedProducts({ relatedProducts }) {
   const classes = useStyles();
   // eslint-disable-next-line no-unused-vars
   const { categoryId } = useParams();
-
   return (
     <>
       <Typography className={classes.title} align="center" variant="h3">
         Related Products
       </Typography>
-      <Grid className={classes.relatedProducts} container spacing={3}>
+      <Grid className={classes.relatedProducts} container justify="center" spacing={3}>
         {relatedProducts.map((product) => (
-          <Grid key={product.id} xs={4} item>
+          <Grid key={product.id} md={4} item>
             <NavLink className={classes.link} to={`${product.id}`}>
               <ProductCard className={classes.relatedProduct} product={product} />
             </NavLink>

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import CheckoutItem from 'components/CheckoutItem';
 import StripeCheckoutButton from 'components/StripeButton';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
 
   checkoutPage: {
     width: '55%',
@@ -13,6 +13,10 @@ const useStyles = makeStyles(() => ({
     flexDirection: 'column',
     alignItems: 'center',
     margin: '50px auto 0',
+    [theme.breakpoints.down('md')]: {
+      width: '95%',
+      margin: '20px auto',
+    },
   },
   checkoutHeader: {
     width: '100%',
@@ -42,6 +46,11 @@ const useStyles = makeStyles(() => ({
     marginTop: 50,
     marginBottom: 50,
   },
+  remove: {
+    [theme.breakpoints.down('md')]: {
+      marginLeft: -20,
+    },
+  },
 }));
 
 function CheckoutPage({ cartItems, cartTotal }) {
@@ -61,8 +70,8 @@ function CheckoutPage({ cartItems, cartTotal }) {
         <div className={classes.headerBlock}>
           <span> Price</span>
         </div>
-        <div className={classes.headerBlock} style={{ width: '8%' }}>
-          <span> Remove</span>
+        <div className={`${classes.headerBlock} ${classes.remove}`} style={{ width: '8%' }}>
+          <span className={classes.remove}> Remove</span>
         </div>
       </div>
 
@@ -84,7 +93,10 @@ function CheckoutPage({ cartItems, cartTotal }) {
         </div>
         <div className={classes.stripeButton}>
           {' '}
-          <StripeCheckoutButton price={cartTotal} />
+          <StripeCheckoutButton
+            price={cartTotal}
+            disabled={cartItems.length === 0}
+          />
           {' '}
         </div>
 

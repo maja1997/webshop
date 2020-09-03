@@ -1,11 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Grid, Container, makeStyles, Typography, Button, Select, FormControl, InputLabel, MenuItem,
+  Grid,
+  Container,
+  makeStyles,
+  Typography,
+  Button,
+  Select,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  CircularProgress,
 } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { addItem } from 'redux/cart/CartActions';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { fetchProduct, fetchRelatedProducts } from 'redux/shop/ShopActions';
 import RelatedProducts from '../RelatedProducts';
 
 toast.configure();
@@ -36,27 +46,47 @@ const useStyles = makeStyles({
     marginBottom: 30,
     width: 100,
   },
+  spinnerContainer: {
+    position: 'relative',
+    height: '100vh',
+  },
+  spinner: {
+    position: 'absolute',
+    top: '40%',
+    left: '50%',
+    transform: 'translateX(-50%)',
+  },
 });
 
 // eslint-disable-next-line no-shadow
-function ProductPage({ collection, addItem }) {
+function ProductPage({
+  products,
+  addItem,
+  fetchProduct,
+}) {
   const classes = useStyles();
   const { categoryId, productId } = useParams();
 
-  const itemForRender = collection[categoryId].items.find((item) => item.id === +productId);
+  const itemForRender = products[categoryId]?.find((item) => item.id === +productId);
   const [productSize, setProductSize] = useState(null);
 
-  const relatedProducts = itemForRender.similarProducts
-    .map((relatedProductId) => collection[categoryId].items
+  useEffect(() => {
+    fetchProduct(categoryId, productId);
+    setProductSize(null);
+  }, [productId]);
+
+  const relatedProducts = itemForRender?.similarProducts
+    .map((relatedProductId) => products[categoryId]
       .find((item) => item.id === +relatedProductId));
 
-  // eslint-disable-next-line eqeqeq
+  const relatedProductsLoaded = relatedProducts?.every((prod) => prod);
+  // eslint-disable-next-line
 
   const notify = () => {
     toast.success('Successful added to cart!', { position: toast.POSITION.BOTTOM_RIGHT, autoClose: 6000 });
   };
 
-  return (
+  return itemForRender ? (
     <Container className={classes.root} maxWidth="lg">
       <Grid container>
         <Grid item md={6}>
@@ -85,9 +115,7 @@ function ProductPage({ collection, addItem }) {
                 labelId="product-size-outlined-label"
                 id="product-size-select-outlined"
                 value={productSize}
-                defaultValue={itemForRender.size[0]}
                 onChange={(event) => setProductSize(event.target.value)}
-                label="Size"
               >
                 {itemForRender.size.map((size) => (
                   <MenuItem value={size}>{size}</MenuItem>
@@ -104,6 +132,7 @@ function ProductPage({ collection, addItem }) {
             variant="contained"
             size="large"
             color="secondary"
+            disabled={!productSize}
             onClick={() => {
               addItem(itemForRender);
               notify();
@@ -113,17 +142,24 @@ function ProductPage({ collection, addItem }) {
           </Button>
         </Grid>
       </Grid>
-      <RelatedProducts relatedProducts={relatedProducts} />
+      {relatedProductsLoaded ? <RelatedProducts relatedProducts={relatedProducts} /> : null}
+
     </Container>
+  ) : (
+    <div className={classes.spinnerContainer}>
+      <CircularProgress className={classes.spinner} />
+    </div>
   );
 }
 
 const mapDispatchToProps = (dispatch) => ({
   addItem: (item) => dispatch(addItem(item)),
+  fetchProduct: (prodType, prodId) => dispatch(fetchProduct(prodType, prodId)),
+  fetchRelatedProducts: (prodType, prodIds) => dispatch(fetchRelatedProducts(prodType, prodIds)),
 });
 
-const mapStateToProps = (state) => ({
-  collection: state.shop.collections,
+const mapStateToProps = ({ shop }) => ({
+  products: shop.products,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductPage);

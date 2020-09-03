@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import {
   Container,
@@ -8,13 +8,15 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useParams } from 'react-router-dom';
+import { bindActionCreators } from 'redux';
+import * as shopActions from 'redux/shop/ShopActions';
 import ProductList from 'containers/product/ProductList';
 import FilterSize from '../FilterSize';
 import FilterBrand from '../FilterBrand';
 import FilterPrice from '../FilterPrice';
 import FilterSizeSneakers from '../FilterSizeSneakers/FilterSizeSneakers';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: 50,
   },
@@ -23,6 +25,9 @@ const useStyles = makeStyles({
   },
   filterContainer: {
     marginTop: 87,
+    [theme.breakpoints.down('md')]: {
+      marginTop: 5,
+    },
   },
   spinnerContainer: {
     position: 'relative',
@@ -34,11 +39,16 @@ const useStyles = makeStyles({
     left: '50%',
     transform: 'translateX(-50%)',
   },
-});
+}));
 
-function CategoryPage({ collection }) {
+function CategoryPage({ products, fetchProducts }) {
   const classes = useStyles();
   const { categoryId } = useParams();
+
+  useEffect(() => {
+    fetchProducts(categoryId);
+  }, [fetchProducts]);
+
   let FilterSizeComponent;
   switch (categoryId) {
     case 'sneakers':
@@ -59,11 +69,11 @@ function CategoryPage({ collection }) {
           <FilterBrand />
           <FilterPrice />
         </Grid>
-        <Grid md="9" item>
+        <Grid md="9" container item>
           <Typography className={classes.title} align="center" variant="h3">
             {categoryId}
           </Typography>
-          {collection ? <ProductList products={collection[categoryId].items} /> : (
+          {products && products[categoryId] ? <ProductList products={products[categoryId]} /> : (
             <div className={classes.spinnerContainer}>
               <CircularProgress className={classes.spinner} />
             </div>
@@ -74,7 +84,9 @@ function CategoryPage({ collection }) {
   );
 }
 const mapStateToProps = ({ shop }) => ({
-  collection: shop.collections,
+  products: shop.products,
 });
 
-export default connect(mapStateToProps)(CategoryPage);
+const mapDispatchToProps = (dispatch) => bindActionCreators(shopActions, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(CategoryPage);

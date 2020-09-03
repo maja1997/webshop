@@ -1,4 +1,9 @@
-import React, { useState } from 'react';
+import React, { useCallback } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { useParams } from 'react-router-dom';
+import { debounce } from 'lodash';
+import * as shopActions from 'redux/shop/ShopActions';
 import {
   Typography,
   ExpansionPanel,
@@ -20,17 +25,28 @@ const useStyles = makeStyles({
   },
 });
 
-const sizes = ['ae', 'aerie'];
+const allBrands = ['ae', 'aerie'];
 
-function FilterBrand() {
+function FilterBrand({ filters: { brands }, fetchProducts, applyFillter }) {
   const classes = useStyles();
-  const [checkState, setCheckState] = useState({
-    ae: true,
-    aerie: true,
-  });
+  const { categoryId } = useParams();
+
+  const debounceFetch = useCallback(
+    debounce(() => fetchProducts(categoryId), 250, { leading: false }),
+    [fetchProducts],
+  );
 
   const handleChange = (event) => {
-    setCheckState({ ...checkState, [event.target.name]: event.target.checked });
+    const targetBrand = event.target.name;
+    let newBrands;
+    if (brands.includes(event.target.name)) {
+      newBrands = brands.filter((size) => size !== targetBrand);
+      applyFillter({ brands: newBrands });
+    } else {
+      newBrands = [...brands, targetBrand];
+      applyFillter({ brands: newBrands });
+    }
+    debounceFetch();
   };
 
   return (
@@ -44,18 +60,18 @@ function FilterBrand() {
       </ExpansionPanelSummary>
       <ExpansionPanelDetails className={classes.root}>
         <FormGroup>
-          {sizes.map((size) => (
+          {allBrands.map((brand) => (
             <FormControlLabel
               className={classes.checkBox}
               control={(
                 <Checkbox
-                  checked={checkState.checkedB}
+                  checked={brands[brand]}
                   onChange={handleChange}
-                  name={size}
+                  name={brand}
                   color="primary"
                 />
                 )}
-              label={size.toUpperCase()}
+              label={brand.toUpperCase()}
             />
           ))}
         </FormGroup>
@@ -64,4 +80,10 @@ function FilterBrand() {
   );
 }
 
-export default FilterBrand;
+const mapStateToProps = ({ shop: { filters } }) => ({
+  filters,
+});
+
+const mapDispatchToProps = (dispatch) => bindActionCreators(shopActions, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(FilterBrand);

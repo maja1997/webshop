@@ -12,8 +12,12 @@ import MapContainer from '../../containers/MapContainer/MapContainer';
 
 const useStyles = makeStyles((theme) => ({
   footer: {
+    marginTop: 150,
     backgroundColor: 'black',
     paddingTop: 20,
+    [theme.breakpoints.down('md')]: {
+      marginTop: 0,
+    },
   },
 
   footerTop: {

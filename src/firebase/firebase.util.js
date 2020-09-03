@@ -3,14 +3,13 @@ import 'firebase/firestore';
 import 'firebase/auth';
 
 const config = {
-  apiKey: 'AIzaSyBldlW4OUKWe3pNPb_Q-H2Rxg64YRH21c0',
-  authDomain: 'e-commerce-db-5b86a.firebaseapp.com',
-  databaseURL: 'https://e-commerce-db-5b86a.firebaseio.com',
-  projectId: 'e-commerce-db-5b86a',
-  storageBucket: 'e-commerce-db-5b86a.appspot.com',
-  messagingSenderId: '927457441637',
-  appId: '1:927457441637:web:bcb88c9b34d4251f25d38c',
-  measurementId: 'G-PCXETYBHXF',
+  apiKey: 'AIzaSyCHDb13hi8FEJSmcMNhbG-IOZfgzA-uQi8',
+  authDomain: 'e-commerce-8a70e.firebaseapp.com',
+  databaseURL: 'https://e-commerce-8a70e.firebaseio.com',
+  projectId: 'e-commerce-8a70e',
+  storageBucket: 'e-commerce-8a70e.appspot.com',
+  messagingSenderId: '837530584646',
+  appId: '1:837530584646:web:506430adf1232da1232c47',
 };
 
 firebase.initializeApp(config);
@@ -44,35 +43,4 @@ export const createUserDocument = async (userAuth, additionalData) => {
   }
   // eslint-disable-next-line consistent-return
   return userRef;
-};
-
-export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
-  const collectionRef = firestore.collection(collectionKey);
-
-  const batch = firestore.batch();
-  objectsToAdd.forEach((obj) => {
-    const newDocRef = collectionRef.doc();
-    batch.set(newDocRef, obj);
-  });
-
-  // eslint-disable-next-line no-return-await
-  return await batch.commit();
-};
-
-export const convertCollectionsSnapshotToMap = (collections) => {
-  const tranformedCollection = collections.docs.map((doc) => {
-    const { title, items } = doc.data();
-
-    return {
-      routeName: encodeURI(title.toLowerCase()),
-      id: doc.id,
-      title,
-      items,
-    };
-  });
-
-  return tranformedCollection.reduce((accumulator, collection) => {
-    accumulator[collection.title.toLowerCase()] = collection;
-    return accumulator;
-  }, {});
 };

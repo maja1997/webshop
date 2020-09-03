@@ -7,7 +7,7 @@ import LandingPage from 'containers/landing/LandingPage';
 import NavBar from 'components/NavBar';
 import SignIn from 'containers/user/SignIn';
 import {
-  auth, createUserDocument, firestore, convertCollectionsSnapshotToMap,
+  auth, createUserDocument, firestore, convertCollectionsSnapshotToMap, addDataToFirestore,
 } from 'firebase/firebase.util';
 import SignUp from 'containers/user/SignUp';
 import { bindActionCreators } from 'redux';
@@ -21,16 +21,29 @@ import Footer from 'components/Footer';
 import { createStructuredSelector } from 'reselect';
 import { selectCurrentUser } from 'redux/user/UserSelectors';
 import * as shopActions from 'redux/shop/ShopActions';
+import { data } from './firebase/shopData';
 
+function createIndex(name) {
+  const arr = name.toLowerCase().split('');
+  const searchableIndex = {};
+
+  let prevKey = '';
+
+  arr.forEach((char) => {
+    const key = prevKey + char;
+    searchableIndex[key] = true;
+    prevKey = key;
+  });
+
+  return searchableIndex;
+}
 function App({ currentUser, setCurrentUser, updateCollections }) {
   useEffect(() => {
-    // eslint-disable-next-line no-unused-vars
-    let unsubscribeFromSnapshot = null;
-    const collectionRef = firestore.collection('collections');
-    unsubscribeFromSnapshot = collectionRef.onSnapshot((snapshot) => {
-      const collectionsMap = convertCollectionsSnapshotToMap(snapshot);
-      updateCollections(collectionsMap);
-    });
+    // za search
+    //  data.forEach((doc) => {
+    //   const searchableIndex = createIndex(doc.name);
+    //   firestore.collection('products').add({ ...doc, searchableIndex });
+    //  });
     const unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
       if (userAuth) {
         const userRef = await createUserDocument(userAuth);

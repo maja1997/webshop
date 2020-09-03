@@ -1,4 +1,8 @@
-import React, { useState } from 'react';
+import React, { useCallback } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { useParams } from 'react-router-dom';
+import { debounce } from 'lodash';
 import {
   Typography,
   ExpansionPanel,
@@ -8,6 +12,7 @@ import {
   Input,
   Box,
 } from '@material-ui/core';
+import * as shopActions from 'redux/shop/ShopActions';
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -20,28 +25,35 @@ const useStyles = makeStyles({
   },
 });
 
-function FilterPrice() {
+function FilterPrice({
+  filters: { price },
+  applyFillter,
+  fetchProducts,
+}) {
   const classes = useStyles();
-  const [value, setValue] = useState([1000, 50000]);
+  const { categoryId } = useParams();
+  const debounceFetch = useCallback(
+    debounce(() => fetchProducts(categoryId), 250, { leading: false }),
+    [fetchProducts],
+  );
 
   const handleChange = (event, newValue) => {
-    setValue(newValue);
+    applyFillter({ price: newValue });
+    debounceFetch();
   };
 
   const handleLeftInputChange = (event) => {
-    setValue([event.target.value === '' ? '' : Number(event.target.value), value[1]]);
+    const lowerVal = event.target.value === '' ? '' : Number(event.target.value);
+    const higherVal = price[1];
+    applyFillter({ price: [lowerVal, higherVal] });
+    debounceFetch();
   };
 
   const handleRightInputChange = (event) => {
-    setValue([value[0], event.target.value === '' ? '' : Number(event.target.value)]);
-  };
-
-  const handleBlur = () => {
-    if (value < 0) {
-      setValue(0);
-    } else if (value > 50000) {
-      setValue(50000);
-    }
+    const higherVal = event.target.value === '' ? '' : Number(event.target.value);
+    const lowerVal = price[0];
+    applyFillter({ price: [lowerVal, higherVal] });
+    debounceFetch();
   };
 
   return (
@@ -57,20 +69,19 @@ function FilterPrice() {
         className={classes.expansionPanelDetails}
       >
         <Slider
-          value={value}
+          value={price}
           onChange={handleChange}
           valueLabelDisplay="auto"
           aria-labelledby="range-slider"
-          max={10000}
-          min={500}
+          max={200}
+          min={5}
         />
         <Box className={classes.inputContainer} justifyContent="space-around" flexDirection="row">
           <Input
             className={classes.input}
-            value={value[0]}
+            value={price[0]}
             margin="dense"
             onChange={handleLeftInputChange}
-            onBlur={handleBlur}
             inputProps={{
               step: 10,
               min: 0,
@@ -81,10 +92,9 @@ function FilterPrice() {
           />
           <Input
             className={classes.input}
-            value={value[1]}
+            value={price[1]}
             margin="dense"
             onChange={handleRightInputChange}
-            onBlur={handleBlur}
             inputProps={{
               step: 10,
               min: 0,
@@ -99,4 +109,10 @@ function FilterPrice() {
   );
 }
 
-export default FilterPrice;
+const mapStateToProps = ({ shop: { filters } }) => ({
+  filters,
+});
+
+const mapDispatchToProps = (dispatch) => bindActionCreators(shopActions, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(FilterPrice);

@@ -3,13 +3,17 @@ import {
   makeStyles, Typography, Paper, Button,
 } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
+import { toast } from 'react-toastify';
 import { signInWithGoogle, auth } from 'firebase/firebase.util';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     backgroundImage: 'url(https://wallpapercrafter.com/uploads/posts/72719-___fashion-clothing-jean-jacket-and-denim-hd.jpg)',
     minHeight: 'calc(100vh - 100px)',
     padding: 100,
+    [theme.breakpoints.down('md')]: {
+      padding: 0,
+    },
   },
   form: {
     display: 'flex',
@@ -30,6 +34,9 @@ const useStyles = makeStyles(() => ({
     width: '100%',
     display: 'flex',
     justifyContent: 'space-around',
+    [theme.breakpoints.down('md')]: {
+      flexDirection: 'column',
+    },
   },
 }));
 
@@ -38,15 +45,19 @@ function SignIn() {
   const [password, setPassword] = useState('');
   const classes = useStyles();
 
+  const notify = ({ message }) => {
+    toast.error(message, { position: toast.POSITION.TOP_RIGHT, autoClose: 6000 });
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      await auth.signInWith;
+      await auth.signInWithEmailAndPassword(email, password);
       setEmail('');
       setPassword('');
     } catch (err) {
-      // todo
+      notify(err);
     }
   };
 

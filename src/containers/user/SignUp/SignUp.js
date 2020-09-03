@@ -3,13 +3,17 @@ import { auth, createUserDocument } from 'firebase/firebase.util';
 import {
   makeStyles, Typography, Paper, Button,
 } from '@material-ui/core';
+import { toast } from 'react-toastify';
 import TextField from '@material-ui/core/TextField';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     backgroundImage: 'url(https://wallpapercrafter.com/uploads/posts/72719-___fashion-clothing-jean-jacket-and-denim-hd.jpg)',
     minHeight: 'calc(100vh - 100px)',
     padding: 100,
+    [theme.breakpoints.down('md')]: {
+      padding: 0,
+    },
   },
   form: {
     display: 'flex',
@@ -30,20 +34,34 @@ const useStyles = makeStyles(() => ({
     width: '100%',
     display: 'flex',
     justifyContent: 'space-around',
+    [theme.breakpoints.down('md')]: {
+      flexDirection: 'column',
+    },
   },
 }));
 
 function SignUp() {
   const [displayName, setdisplayName] = useState('');
+  const [displayNameError, setDisplayNameError] = useState('');
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setconfirmPassword] = useState('');
   const classes = useStyles();
 
+  const notify = ({ message }) => {
+    toast.error(message, { position: toast.POSITION.TOP_RIGHT, autoClose: 6000 });
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (password !== confirmPassword) {
+      return;
+    }
+
+    if (displayName.length < 4) {
+      setDisplayNameError('sorry that name is too short');
       return;
     }
 
@@ -55,7 +73,7 @@ function SignUp() {
       setPassword('');
       setconfirmPassword('');
     } catch (err) {
-      // todo
+      notify(err);
     }
   };
 
@@ -84,6 +102,8 @@ function SignUp() {
           }}
           value={displayName}
           className={classes.input}
+          helperText={displayNameError}
+          error={displayNameError}
         />
         <TextField
           required
