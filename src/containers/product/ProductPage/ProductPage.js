@@ -17,21 +17,17 @@ import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { fetchProduct, fetchRelatedProducts } from 'redux/shop/ShopActions';
 import RelatedProducts from '../RelatedProducts';
+import ProductTabs from '../ProductTabs';
 
 toast.configure();
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: 30,
   },
   image: {
     maxWidth: '82%',
     height: 'auto',
-  },
-  details: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
   },
   detailsTitle: {
     marginTop: 50,
@@ -43,7 +39,6 @@ const useStyles = makeStyles({
     margin: '20px 0',
   },
   sizePicker: {
-    marginBottom: 30,
     width: 100,
   },
   spinnerContainer: {
@@ -56,7 +51,19 @@ const useStyles = makeStyles({
     left: '50%',
     transform: 'translateX(-50%)',
   },
-});
+  addToCartAndPrice: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '80%',
+    [theme.breakpoints.down('md')]: {
+      width: '100%',
+    },
+  },
+  details: {
+    marginBottom: 20,
+  },
+}));
 
 // eslint-disable-next-line no-shadow
 function ProductPage({
@@ -100,50 +107,44 @@ function ProductPage({
           <Typography variant="h3">
             {itemForRender.name}
           </Typography>
-          <Typography className={classes.detailsTitle} variant="h5">
-            Details:
-          </Typography>
-          <Typography className={classes.description} variant="body1">
-            <ul>
-              {itemForRender.description.map((bullet) => <li>{bullet}</li>)}
-            </ul>
-          </Typography>
-          {categoryId === 'hats' ? null : (
-            <FormControl variant="outlined" className={classes.sizePicker}>
-              <InputLabel id="product-size">Size</InputLabel>
-              <Select
-                labelId="product-size-outlined-label"
-                id="product-size-select-outlined"
-                value={productSize}
-                onChange={(event) => setProductSize(event.target.value)}
-              >
-                {itemForRender.size.map((size) => (
-                  <MenuItem value={size}>{size}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          ) }
+          {relatedProductsLoaded ? <RelatedProducts relatedProducts={relatedProducts} /> : null}
 
-          <Typography className={classes.price} variant="h4">
-            $
-            {itemForRender.price}
-          </Typography>
-          <Button
-            variant="contained"
-            size="large"
-            color="secondary"
-            disabled={!productSize}
-            onClick={() => {
-              addItem(itemForRender);
-              notify();
-            }}
-          >
-            Add to cart
-          </Button>
+          <div className={classes.addToCartAndPrice}>
+            {categoryId === 'hats' ? null : (
+              <FormControl variant="outlined" className={classes.sizePicker}>
+                <InputLabel id="product-size">Size</InputLabel>
+                <Select
+                  labelId="product-size-outlined-label"
+                  id="product-size-select-outlined"
+                  value={productSize}
+                  onChange={(event) => setProductSize(event.target.value)}
+                >
+                  {itemForRender.size.map((size) => (
+                    <MenuItem value={size}>{size}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            ) }
+            <Typography className={classes.price} variant="h4">
+              $
+              {itemForRender.price}
+            </Typography>
+            <Button
+              variant="contained"
+              size="large"
+              color="secondary"
+              disabled={!productSize}
+              onClick={() => {
+                addItem(itemForRender);
+                notify();
+              }}
+            >
+              Add to cart
+            </Button>
+          </div>
         </Grid>
       </Grid>
-      {relatedProductsLoaded ? <RelatedProducts relatedProducts={relatedProducts} /> : null}
-
+      <ProductTabs product={itemForRender} />
     </Container>
   ) : (
     <div className={classes.spinnerContainer}>

@@ -8,7 +8,7 @@ import LandingItem from 'containers/landing/LandingItem';
 const useStyles = makeStyles({
   root: {
     flexGrow: 1,
-    marginTop: 25,
+    marginTop: 50,
   },
 });
 

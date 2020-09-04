@@ -18,7 +18,7 @@ const useStyles = makeStyles(() => ({
     marginBottom: 100,
   },
   relatedProduct: {
-    height: 300,
+    height: 150,
   },
 
   title: {

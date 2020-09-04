@@ -113,7 +113,7 @@ function NavBar({
             }
         </Menu>
         <Typography variant="h4" className={classes.title}>
-          Bella Ciao
+          <Link style={{ textDecoration: 'none', color: 'black' }} to="/">  Bella Ciao </Link>
         </Typography>
         <Autocomplete
           id="combo-box-demo"

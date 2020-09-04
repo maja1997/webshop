@@ -21,22 +21,23 @@ import Footer from 'components/Footer';
 import { createStructuredSelector } from 'reselect';
 import { selectCurrentUser } from 'redux/user/UserSelectors';
 import * as shopActions from 'redux/shop/ShopActions';
+import DashboardPage from 'containers/dashboard/DashboardPage';
 import { data } from './firebase/shopData';
 
-function createIndex(name) {
-  const arr = name.toLowerCase().split('');
-  const searchableIndex = {};
+// function createIndex(name) {
+//   const arr = name.toLowerCase().split('');
+//   const searchableIndex = {};
 
-  let prevKey = '';
+//   let prevKey = '';
 
-  arr.forEach((char) => {
-    const key = prevKey + char;
-    searchableIndex[key] = true;
-    prevKey = key;
-  });
+//   arr.forEach((char) => {
+//     const key = prevKey + char;
+//     searchableIndex[key] = true;
+//     prevKey = key;
+//   });
 
-  return searchableIndex;
-}
+//   return searchableIndex;
+// }
 function App({ currentUser, setCurrentUser, updateCollections }) {
   useEffect(() => {
     // za search
@@ -83,6 +84,9 @@ function App({ currentUser, setCurrentUser, updateCollections }) {
         </Route>
         <Route exact path="/checkout">
           <CheckoutPage />
+        </Route>
+        <Route exact path="/dashboard">
+          <DashboardPage />
         </Route>
       </Switch>
       <Footer />
